@@ -222,54 +222,54 @@ module PC2 (left_block, right_block, subkey);
    assign combined[55:0] = {left_block[27:0],right_block[27:0]};
 
 
-   subkey[47] = combined[56-14];
-   subkey[46] = combined[56-17];
-   subkey[45] = combined[56-11];
-   subkey[44] = combined[56-24];
-   subkey[43] = combined[56-1];
-   subkey[42] = combined[56-5];
-   subkey[41] = combined[56-3];
-   subkey[40] = combined[56-28];
-   subkey[39] = combined[56-15];
-   subkey[38] = combined[56-6];
-   subkey[37] = combined[56-21];
-   subkey[36] = combined[56-10];
-   subkey[35] = combined[56-23];
-   subkey[34] = combined[56-19];
-   subkey[33] = combined[56-12];
-   subkey[32] = combined[56-4];
-   subkey[31] = combined[56-26];
-   subkey[30] = combined[56-8];
-   subkey[29] = combined[56-16];
-   subkey[28] = combined[56-7];
-   subkey[27] = combined[56-27];
-   subkey[26] = combined[56-20];
-   subkey[25] = combined[56-13];
-   subkey[24] = combined[56-2];
-   subkey[23] = combined[56-41];
-   subkey[22] = combined[56-52];
-   subkey[21] = combined[56-31];
-   subkey[20] = combined[56-37];
-   subkey[19] = combined[56-47];
-   subkey[18] = combined[56-55];
-   subkey[17] = combined[56-30];
-   subkey[16] = combined[56-40];
-   subkey[15] = combined[56-51];
-   subkey[14] = combined[56-45];
-   subkey[13] = combined[56-33];
-   subkey[12] = combined[56-48];
-   subkey[11] = combined[56-44];
-   subkey[10] = combined[56-49];
-   subkey[9] = combined[56-39];
-   subkey[8] = combined[56-56];
-   subkey[7] = combined[56-34];
-   subkey[6] = combined[56-53];
-   subkey[5] = combined[56-46];
-   subkey[4] = combined[56-42];
-   subkey[3] = combined[56-50];
-   subkey[2] = combined[56-36];
-   subkey[1] = combined[56-29];
-   subkey[0] = combined[56-32];
+   assign subkey[47] = combined[56-14];
+   assign subkey[46] = combined[56-17];
+   assign subkey[45] = combined[56-11];
+   assign subkey[44] = combined[56-24];
+   assign subkey[43] = combined[56-1];
+   assign subkey[42] = combined[56-5];
+   assign subkey[41] = combined[56-3];
+   assign subkey[40] = combined[56-28];
+   assign subkey[39] = combined[56-15];
+   assign subkey[38] = combined[56-6];
+   assign subkey[37] = combined[56-21];
+   assign subkey[36] = combined[56-10];
+   assign subkey[35] = combined[56-23];
+   assign subkey[34] = combined[56-19];
+   assign subkey[33] = combined[56-12];
+   assign subkey[32] = combined[56-4];
+   assign subkey[31] = combined[56-26];
+   assign subkey[30] = combined[56-8];
+   assign subkey[29] = combined[56-16];
+   assign subkey[28] = combined[56-7];
+   assign subkey[27] = combined[56-27];
+   assign subkey[26] = combined[56-20];
+   assign subkey[25] = combined[56-13];
+   assign subkey[24] = combined[56-2];
+   assign subkey[23] = combined[56-41];
+   assign subkey[22] = combined[56-52];
+   assign subkey[21] = combined[56-31];
+   assign subkey[20] = combined[56-37];
+   assign subkey[19] = combined[56-47];
+   assign subkey[18] = combined[56-55];
+   assign subkey[17] = combined[56-30];
+   assign subkey[16] = combined[56-40];
+   assign subkey[15] = combined[56-51];
+   assign subkey[14] = combined[56-45];
+   assign subkey[13] = combined[56-33];
+   assign subkey[12] = combined[56-48];
+   assign subkey[11] = combined[56-44];
+   assign subkey[10] = combined[56-49];
+   assign subkey[9] = combined[56-39];
+   assign subkey[8] = combined[56-56];
+   assign subkey[7] = combined[56-34];
+   assign subkey[6] = combined[56-53];
+   assign subkey[5] = combined[56-46];
+   assign subkey[4] = combined[56-42];
+   assign subkey[3] = combined[56-50];
+   assign subkey[2] = combined[56-36];
+   assign subkey[1] = combined[56-29];
+   assign subkey[0] = combined[56-32];
 endmodule // PC2
 
 // Straight Function
@@ -422,7 +422,7 @@ module round (inp_block, subkey, out_block);
 
 	//Run Feistel f(k)
    feistel Fk(inp_right, subkey, feistel_out);
-   assign out_right = inp_left ^ feistel_out
+   assign out_right = inp_left ^ feistel_out;
 
    assign out_block[63:32] = inp_right;
    assign out_block[31:0] = out_right;
@@ -1254,16 +1254,16 @@ module DES (input logic [63:0] key, input logic [63:0] plaintext,
    round r12(rWire11, subkey12, rWire12);
    
    // round 13
-   round r12(rWire12, subkey13, rWire13);
+   round r13(rWire12, subkey13, rWire13);
    
    // round 14
-   round r12(rWire13, subkey14, rWire14);
+   round r14(rWire13, subkey14, rWire14);
    
    // round 15
-   round r12(rWire14, subkey15, rWire15);
+   round r15(rWire14, subkey15, rWire15);
    
    // round 16
-	round r12(rWire15, subkey16, rWire16);
+	round r16(rWire15, subkey16, rWire16);
    
    // Final Permutation (IP^{-1}) (swap output of round16)
    FP FP({rWire16[31:0], rWire16[63:32]}, ciphertext);
