@@ -5,29 +5,31 @@
  */
 
 //Generate Keys
-module GenerateKeys (Key, SubKey1, SubKey2, SubKey3, SubKey4,
-		     SubKey5, SubKey6, SubKey7, SubKey8,
-		     SubKey9, SubKey10, SubKey11, SubKey12,
-		     SubKey13, SubKey14, SubKey15, SubKey16);
+module GenerateKeys (key, subkey1, subkey2, subkey3, subkey4,
+		     subkey5, subkey6, subkey7, subkey8,
+		     subkey9, subkey10, subkey11, subkey12,
+		     subkey13, subkey14, subkey15, subkey16);
    
-   // Generate SubKeys
-   input logic [63:0]  Key;
-   output logic [47:0] SubKey1;
-   output logic [47:0] SubKey2;
-   output logic [47:0] SubKey3;
-   output logic [47:0] SubKey4;
-   output logic [47:0] SubKey5;
-   output logic [47:0] SubKey6;
-   output logic [47:0] SubKey7;
-   output logic [47:0] SubKey8;
-   output logic [47:0] SubKey9;
-   output logic [47:0] SubKey10;
-   output logic [47:0] SubKey11;
-   output logic [47:0] SubKey12;
-   output logic [47:0] SubKey13;
-   output logic [47:0] SubKey14;
-   output logic [47:0] SubKey15;
-   output logic [47:0] SubKey16;
+   // Generate subkeys
+   input logic [63:0]  key;
+   output logic [47:0] subkey1;
+   output logic [47:0] subkey2;
+   output logic [47:0] subkey3;
+   output logic [47:0] subkey4;
+   output logic [47:0] subkey5;
+   output logic [47:0] subkey6;
+   output logic [47:0] subkey7;
+   output logic [47:0] subkey8;
+   output logic [47:0] subkey9;
+   output logic [47:0] subkey10;
+   output logic [47:0] subkey11;
+   output logic [47:0] subkey12;
+   output logic [47:0] subkey13;
+   output logic [47:0] subkey14;
+   output logic [47:0] subkey15;
+   output logic [47:0] subkey16;
+   logic[27:0] c0;
+   logic[27:0] d0;
    logic [27:0] c1;
    logic [27:0] d1;
    logic [27:0] c2;
@@ -63,22 +65,27 @@ module GenerateKeys (Key, SubKey1, SubKey2, SubKey3, SubKey4,
 
 
 	//Initial
-	PC1 I(key,c1,d1);
+	PC1 I(key,c0,d0);
+
+
+	assign c1 = {c0[26:0],c0[27]};
+	assign d1 = {d0[26:0],d0[27]};
+	PC2 II(c1, d1, subkey1);
 
 
 	assign c2 = {c1[26:0],c1[27]};
 	assign d2 = {d1[26:0],d1[27]};
-	PC2 II(c2, d2, subkey1);
+	PC2 III(c1,d1,subkey2);
 
 
-	assign c3 = {c2[26:0],c2[27]};
-	assign d3 = {d2[26:0],d2[27]};
-	PC2 III(c3,d3,subkey2);
+	assign c3 = {c2[25:0],c2[27:26]};
+	assign d3 = {d2[25:0],d2[27:26]};
+	PC2 rIII(c3,d3,subkey3);
 
 
 	assign c4 = {c3[25:0],c3[27:26]};
 	assign d4 = {d3[25:0],d3[27:26]};
-	PC2 IV(c4,s4,subkey4);
+	PC2 IV(c4,d4,subkey4);
 
 
 	assign c5 = {c4[25:0],c4[27:26]};
@@ -101,8 +108,8 @@ module GenerateKeys (Key, SubKey1, SubKey2, SubKey3, SubKey4,
 	PC2 VIII(c8,d8,subkey8);
 
 
-	assign c9 = {c8[25:0],c8[27:26]};
-	assign d9 = {d8[25:0],d8[27:26]};
+	assign c9 = {c8[27:26],c8[27:26]};
+	assign d9 = {d8[26:0],d8[27]};
 	PC2 IX(c9,d9,subkey9);
 
 
@@ -111,8 +118,8 @@ module GenerateKeys (Key, SubKey1, SubKey2, SubKey3, SubKey4,
 	PC2 X(c10,d10,subkey10);
 
 
-	assign c11 = {c10[25:0],c10[27]};
-	assign d11 = {d10[25:0],d10[27]};
+	assign c11 = {c10[25:0],c10[27:26]};
+	assign d11 = {d10[25:0],d10[27:26]};
 	PC2 XI(c11,d11,subkey11);
 
 
@@ -139,6 +146,7 @@ module GenerateKeys (Key, SubKey1, SubKey2, SubKey3, SubKey4,
 	assign c16 = {c15[26:0],c15[27]};
 	assign d16 = {d15[26:0],d15[27]};
 	PC2 XVI(c16,d16,subkey16);
+
 endmodule 
 
 //Permutation Choice 1
@@ -150,7 +158,7 @@ module PC1 (key, c1, d1);
 	
 
 
-   logic [55:0]        out_block;
+   //logic [55:0]        out_block;
    //LEFT BLOCK
 	assign c1[27] = key[64-57];
 	assign c1[26] = key[64-49];
@@ -278,101 +286,101 @@ module SF (inp_block, out_block);
    input logic [31:0] inp_block;
    output logic [31:0] out_block;
 
-   assign out_block[31] = inp_block[32 - 16];
-   assign out_block[30] = inp_block[32 - 7];
-   assign out_block[29] = inp_block[32 - 20];
-   assign out_block[28] = inp_block[32 - 21];
-   assign out_block[27] = inp_block[32 - 29];
-   assign out_block[26] = inp_block[32 - 12];
-   assign out_block[25] = inp_block[32 - 28];
-   assign out_block[24] = inp_block[32 - 17];
-   assign out_block[23] = inp_block[32 - 1];
-   assign out_block[22] = inp_block[32 - 15];
-   assign out_block[21] = inp_block[32 - 23];
-   assign out_block[20] = inp_block[32 - 26];
-   assign out_block[19] = inp_block[32 - 5];
-   assign out_block[18] = inp_block[32 - 18];
-   assign out_block[17] = inp_block[32 - 36];
-   assign out_block[16] = inp_block[32 - 10];
-   assign out_block[15] = inp_block[32 - 2];
-   assign out_block[14] = inp_block[32 - 8];
-   assign out_block[13] = inp_block[32 - 24];
-   assign out_block[12] = inp_block[32 - 14];
-   assign out_block[11] = inp_block[32 - 32];
-   assign out_block[10] = inp_block[32 - 27];
-   assign out_block[9] = inp_block[32 - 3];
-   assign out_block[8] = inp_block[32 - 9];
-   assign out_block[7] = inp_block[32 - 19];
-   assign out_block[6] = inp_block[32 - 13];
-   assign out_block[5] = inp_block[32 - 30];
-   assign out_block[4] = inp_block[32 - 6];
-   assign out_block[3] = inp_block[32 - 22];
-   assign out_block[2] = inp_block[32 - 11];
-   assign out_block[1] = inp_block[32 - 4];
-   assign out_block[0] = inp_block[32 - 25];
+   assign out_block[31] = inp_block[32-16];
+   assign out_block[30] = inp_block[32-7];
+   assign out_block[29] = inp_block[32-20];
+   assign out_block[28] = inp_block[32-21];
+   assign out_block[27] = inp_block[32-29];
+   assign out_block[26] = inp_block[32-12];
+   assign out_block[25] = inp_block[32-28];
+   assign out_block[24] = inp_block[32-17];
+   assign out_block[23] = inp_block[32-1];
+   assign out_block[22] = inp_block[32-15];
+   assign out_block[21] = inp_block[32-23];
+   assign out_block[20] = inp_block[32-26];
+   assign out_block[19] = inp_block[32-5];
+   assign out_block[18] = inp_block[32-18];
+   assign out_block[17] = inp_block[32-31];
+   assign out_block[16] = inp_block[32-10];
+   assign out_block[15] = inp_block[32-2];
+   assign out_block[14] = inp_block[32-8];
+   assign out_block[13] = inp_block[32-24];
+   assign out_block[12] = inp_block[32-14];
+   assign out_block[11] = inp_block[32-32];
+   assign out_block[10] = inp_block[32-27];
+   assign out_block[9] = inp_block[32-3];
+   assign out_block[8] = inp_block[32-9];
+   assign out_block[7] = inp_block[32-19];
+   assign out_block[6] = inp_block[32-13];
+   assign out_block[5] = inp_block[32-30];
+   assign out_block[4] = inp_block[32-6];
+   assign out_block[3] = inp_block[32-22];
+   assign out_block[2] = inp_block[32-11];
+   assign out_block[1] = inp_block[32-4];
+   assign out_block[0] = inp_block[32-25];
 endmodule // SF
 
 // Expansion Function
 module EF (inp_block, out_block);
 
    input logic [31:0] inp_block;
-   input logic [47:0]  subkey;
    output logic [47:0] out_block;
 
-   assign out_block[47] = inp_block[32 - 32];
-   assign out_block[46] = inp_block[32 - 1];
-   assign out_block[45] = inp_block[32 - 2];
-   assign out_block[44] = inp_block[32 - 3];
-   assign out_block[43] = inp_block[32 - 4];
-   assign out_block[42] = inp_block[32 - 5];
-   assign out_block[41] = inp_block[32 - 4];
-   assign out_block[40] = inp_block[32 - 5];
-   assign out_block[39] = inp_block[32 - 6];
-   assign out_block[38] = inp_block[32 - 7];
-   assign out_block[37] = inp_block[32 - 8];
-   assign out_block[36] = inp_block[32 - 9];
-   assign out_block[35] = inp_block[32 - 8];
-   assign out_block[34] = inp_block[32 - 9];
-   assign out_block[33] = inp_block[32 - 10];
-   assign out_block[32] = inp_block[32 - 11];
-   assign out_block[31] = inp_block[32 - 12];
-   assign out_block[30] = inp_block[32 - 13];
-   assign out_block[29] = inp_block[32 - 12];
-   assign out_block[28] = inp_block[32 - 13];
-   assign out_block[27] = inp_block[32 - 14];
-   assign out_block[26] = inp_block[32 - 15];
-   assign out_block[25] = inp_block[32 - 16];
-   assign out_block[24] = inp_block[32 - 17];
-   assign out_block[23] = inp_block[32 - 16];
-   assign out_block[22] = inp_block[32 - 17];
-   assign out_block[21] = inp_block[32 - 18];
-   assign out_block[20] = inp_block[32 - 19];
-   assign out_block[19] = inp_block[32 - 20];
-   assign out_block[18] = inp_block[32 - 21];
-   assign out_block[17] = inp_block[32 - 20];
-   assign out_block[16] = inp_block[32 - 21];
-   assign out_block[15] = inp_block[32 - 22];
-   assign out_block[14] = inp_block[32 - 23];
-   assign out_block[13] = inp_block[32 - 24];
-   assign out_block[12] = inp_block[32 - 25];
-   assign out_block[11] = inp_block[32 - 24];
-   assign out_block[10] = inp_block[32 - 25];
-   assign out_block[9] = inp_block[32 - 26];
-   assign out_block[8] = inp_block[32 - 27];
-   assign out_block[7] = inp_block[32 - 28];
-   assign out_block[6] = inp_block[32 - 29];
-   assign out_block[5] = inp_block[32 - 28];
-   assign out_block[4] = inp_block[32 - 29];
-   assign out_block[3] = inp_block[32 - 30];
-   assign out_block[2] = inp_block[32 - 31];
-   assign out_block[1] = inp_block[32 - 32];
-   assign out_block[0] = inp_block[32 - 1];
+   assign out_block[47] = inp_block[32-32];
+   assign out_block[46] = inp_block[32-1];
+   assign out_block[45] = inp_block[32-2];
+   assign out_block[44] = inp_block[32-3];
+   assign out_block[43] = inp_block[32-4];
+   assign out_block[42] = inp_block[32-5];
+   assign out_block[41] = inp_block[32-4];
+   assign out_block[40] = inp_block[32-5];
+   assign out_block[39] = inp_block[32-6];
+   assign out_block[38] = inp_block[32-7];
+   assign out_block[37] = inp_block[32-8];
+   assign out_block[36] = inp_block[32-9];
+   assign out_block[35] = inp_block[32-8];
+   assign out_block[34] = inp_block[32-9];
+   assign out_block[33] = inp_block[32-10];
+   assign out_block[32] = inp_block[32-11];
+   assign out_block[31] = inp_block[32-12];
+   assign out_block[30] = inp_block[32-13];
+   assign out_block[29] = inp_block[32-12];
+   assign out_block[28] = inp_block[32-13];
+   assign out_block[27] = inp_block[32-14];
+   assign out_block[26] = inp_block[32-15];
+   assign out_block[25] = inp_block[32-16];
+   assign out_block[24] = inp_block[32-17];
+   assign out_block[23] = inp_block[32-16];
+   assign out_block[22] = inp_block[32-17];
+   assign out_block[21] = inp_block[32-18];
+   assign out_block[20] = inp_block[32-19];
+   assign out_block[19] = inp_block[32-20];
+   assign out_block[18] = inp_block[32-21];
+   assign out_block[17] = inp_block[32-20];
+   assign out_block[16] = inp_block[32-21];
+   assign out_block[15] = inp_block[32-22];
+   assign out_block[14] = inp_block[32-23];
+   assign out_block[13] = inp_block[32-24];
+   assign out_block[12] = inp_block[32-25];
+   assign out_block[11] = inp_block[32-24];
+   assign out_block[10] = inp_block[32-25];
+   assign out_block[9] = inp_block[32-26];
+   assign out_block[8] = inp_block[32-27];
+   assign out_block[7] = inp_block[32-28];
+   assign out_block[6] = inp_block[32-29];
+   assign out_block[5] = inp_block[32-28];
+   assign out_block[4] = inp_block[32-29];
+   assign out_block[3] = inp_block[32-30];
+   assign out_block[2] = inp_block[32-31];
+   assign out_block[1] = inp_block[32-32];
+   assign out_block[0] = inp_block[32-1];
 endmodule // EF
 
 module feistel (inp_block, subkey, out_block);
 
    input logic [31:0]  inp_block;
    input logic [47:0]  subkey;
+   output logic [31:0] out_block;
    logic [47:0] ef_out;
    logic [47:0] xor_out;
    logic [3:0] S8_Out;
@@ -383,7 +391,6 @@ module feistel (inp_block, subkey, out_block);
    logic [3:0] S3_Out;
    logic [3:0] S2_Out;
    logic [3:0] S1_Out;
-   output logic [31:0] out_block;
    logic [31:0] StraightIn;
 
 
@@ -407,26 +414,27 @@ endmodule // Feistel
 
 // DES block round
 module round (inp_block, subkey, out_block);
+	input logic [63:0]  inp_block;
+ 	input logic[47:0] subkey;
+ 	output logic [63:0] out_block;
 
-   input logic [63:0]  inp_block;
-   input logic [47:0]  subkey;
-   output logic [63:0] out_block;
-
-   logic[31:0] inp_left,inp_right;
-   logic[31:0] feistel_out;
-   logic[31:0] out_right;
-
-   assign inp_left = inp_block[63:32];
-   assign inp_right = inp_block[31:0];
+	logic[31:0] inp_left,inp_right;
+	logic[31:0] feistel_out;
+	logic[31:0] out_right;
+	logic[31:0] out_left;
 
 
-	//Run Feistel f(k)
-   feistel Fk(inp_right, subkey, feistel_out);
-   assign out_right = inp_left ^ feistel_out;
+	assign inp_left = inp_block[63:32];
+	assign inp_right = inp_block[31:0];
 
-   assign out_block[63:32] = inp_right;
-   assign out_block[31:0] = out_right;
-endmodule // round1
+	feistel f(inp_right, subkey, feistel_out);
+
+	assign out_left = inp_right;
+	assign out_right = inp_left ^ feistel_out;
+
+	assign out_block[31:0] = out_right;
+	assign out_block[63:32] = out_left;
+endmodule
 
 // Initial Permutation
 module IP (inp_block, out_block);
@@ -1196,77 +1204,91 @@ module S8_Box (inp_bits, out_bits);
    
 endmodule // S8_Box
 
-module DES (input logic [63:0] key, input logic [63:0] plaintext, 
-	    input logic encrypt, output logic [63:0] ciphertext);
-	logic[63:0]		rWire1,rWire2,rWire3,rWire4,rWire5,rWire6,rWire7,rWire8,rWire9,rWire10,rWire11,rWire12,rWire13,rWire14,rWire15,rWire16;
-   logic [47:0] 	SubKey1, SubKey2, SubKey3, SubKey4;   
-   logic [47:0] 	SubKey5, SubKey6, SubKey7, SubKey8;   
-   logic [47:0] 	SubKey9, SubKey10, SubKey11, SubKey12;
-   logic [47:0] 	SubKey13, SubKey14, SubKey15, SubKey16;
+module DES (input logic [63:0] key, input logic [63:0] plaintext, input logic encrypt, output logic [63:0] ciphertext);
+	logic[63:0]		r_out1;
+	logic[63:0]		r_out2;
+	logic[63:0]		r_out3;
+	logic[63:0]		r_out4;
+	logic[63:0]		r_out5;
+	logic[63:0]		r_out6;
+	logic[63:0]		r_out7;
+	logic[63:0]		r_out8;
+	logic[63:0]		r_out9;
+	logic[63:0]		r_out10;
+	logic[63:0]		r_out11;
+	logic[63:0]		r_out12;
+	logic[63:0]		r_out13;
+	logic[63:0]		r_out14;
+	logic[63:0]		r_out15;
+	logic[63:0]		r_out16;
+    logic [47:0] 	subkey1, subkey2, subkey3, subkey4;   
+    logic [47:0] 	subkey5, subkey6, subkey7, subkey8;   
+    logic [47:0] 	subkey9, subkey10, subkey11, subkey12;
+    logic [47:0] 	subkey13, subkey14, subkey15, subkey16;
 
-   logic [63:0] 	ip_out;   
-   logic [63:0] 	r16_out = 64'h0;   
+    logic [63:0] 	ip_out;   
+    logic [63:0] 	r16_out = 64'h0;   
    
-   // SubKey generation
-   GenerateKeys k1 (key, SubKey1, SubKey2, SubKey3, SubKey4,
-		    SubKey5, SubKey6, SubKey7, SubKey8,
-		    SubKey9, SubKey10, SubKey11, SubKey12,
-		    SubKey13, SubKey14, SubKey15, SubKey16);
+   // subkey generation
+   GenerateKeys k1 (key, subkey1, subkey2, subkey3, subkey4,
+		    subkey5, subkey6, subkey7, subkey8,
+		    subkey9, subkey10, subkey11, subkey12,
+		    subkey13, subkey14, subkey15, subkey16);
    // encrypt (encrypt=1) or decrypt (encrypt=0) 
 
    // Initial Permutation (IP)
    IP b1 (plaintext, ip_out);
    
    // round 1
-	round r1(ip_out, subkey1, rWire1);
+	round r1(ip_out, subkey1, r_out1);
    
    // round 2
-	round r2(rWire1, subkey2, rWire2);
+	round r2(r_out1, subkey2, r_out2);
    
    // round 3
-   round r3(rWire2, subkey3, rWire3);
+   round r3(r_out2, subkey3, r_out3);
    
    // round 4
-   round r4(rWire3, subkey4, rWire4);
+   round r4(r_out3, subkey4, r_out4);
    
    // round 5
-   round r5(rWire4, subkey5, rWire5);
+   round r5(r_out4, subkey5, r_out5);
    
    // round 6
-   round r6(rWire5, subkey6, rWire6);
+   round r6(r_out5, subkey6, r_out6);
    
    // round 7
-   round r7(rWire6, subkey7, rWire7);
+   round r7(r_out6, subkey7, r_out7);
    
    // round 8
-   round r8(rWire7, subkey8, rWire8);
+   round r8(r_out7, subkey8, r_out8);
    
    // round 9
-   round r9(rWire8, subkey9, rWire9);
+   round r9(r_out8, subkey9, r_out9);
    
    // round 10
-   round r10(rWire9, subkey10, rWire10);
+   round r10(r_out9, subkey10, r_out10);
    
    // round 11
-   round r11(rWire10, subkey11, rWire11);
+   round r11(r_out10, subkey11, r_out11);
    
    // round 12
-   round r12(rWire11, subkey12, rWire12);
+   round r12(r_out11, subkey12, r_out12);
    
    // round 13
-   round r13(rWire12, subkey13, rWire13);
+   round r13(r_out12, subkey13, r_out13);
    
    // round 14
-   round r14(rWire13, subkey14, rWire14);
+   round r14(r_out13, subkey14, r_out14);
    
    // round 15
-   round r15(rWire14, subkey15, rWire15);
+   round r15(r_out14, subkey15, r_out15);
    
    // round 16
-	round r16(rWire15, subkey16, rWire16);
+	round r16(r_out15, subkey16, r_out16);
    
    // Final Permutation (IP^{-1}) (swap output of round16)
-   FP FP({rWire16[31:0], rWire16[63:32]}, ciphertext);
+   FP FP({r_out16[31:0], r_out16[63:32]}, ciphertext);
    
 endmodule // DES
 

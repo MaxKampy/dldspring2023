@@ -38,9 +38,9 @@ WaveRestoreZoom {0 ps} {75 ns}
 configure wave -namecolwidth 350
 configure wave -valuecolwidth 200
 configure wave -justifyvalue left
-configure wave -signalnamewidth 1
+#configure wave -signalnamewidth 1
 configure wave -snapdistance 10
-configure wave -datasetprefix 0
+#configure wave -datasetprefix 0
 configure wave -rowmargin 4
 configure wave -childrowmargin 2
 -- Run the Simulation 
